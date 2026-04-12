@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+  adk-web:
+    build: .
+    container_name: adk-web-ui
+    env_file:
+      - agents\.env
+    ports:
+      - "8000:8000"
