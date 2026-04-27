@@ -1,10 +1,14 @@
 version: "3.9"
 
 services:
-  adk-web:
+  adk-agent:
     build: .
-    container_name: adk-web-ui
-    env_file:
-      - agents\.env
+    container_name: adk-mcp-agent
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+    restart: always
+    env_file:
+      - .env
+    command: uvicorn app:app --host 0.0.0.0 --port 8000

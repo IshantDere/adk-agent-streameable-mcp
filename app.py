@@ -1,17 +1,19 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from agents.agent import agent
+from google.adk.runners import InMemoryRunner
 
 app = FastAPI()
 
-class Query(BaseModel):
+runner = InMemoryRunner(agent=agent)   # create once globally
+
+class ChatRequest(BaseModel):
     message: str
 
-@app.get("/")
-def root():
-    return {"status": "ok"}
-
 @app.post("/chat")
-async def chat(query: Query):
-    response = agent.run(query.message)
-    return {"response": response}
+async def chat(req: ChatRequest):
+    try:
+        result = await runner.run_debug(req.message)
+        return {"status": "success", "output": result}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
